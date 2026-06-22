@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light';}})();</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hariharan I — Full-Stack Developer</title>
+<meta name="description" content="Hariharan I — full-stack developer shipping fast, AI-integrated web products end-to-end." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   COBALT POSTER SYSTEM
+   A duotone identity: electric cobalt poster panels for the loud
+   moments (hero, capabilities, contact) and bone paper for the
+   reading moments (work, about, path). One signal color — flare
+   orange — reserved for action and emphasis.
+   Signature: the Preview Lens — a live mock-UI card that chases
+   your cursor across the project index.
+   ============================================================ */
+:root{
+  --cobalt:#1A2AE0;
+  --cobalt-deep:#101FB4;
+  --flare:#FF6B2C;
+  --ink:#0C0F1F;                       /* always-dark: mock windows, text on flare */
+  --press:#1A2AE0;                     /* the printing surface behind the halftone */
+  --tone:#F4F2EA;                      /* text on press panels */
+  --paper:#F4F2EA;                     /* reading panels */
+  --paper-ink:#0C0F1F;                 /* text on paper */
+  --cob-text:#1A2AE0;                  /* cobalt used AS text on paper */
+  --line-on-blue:rgba(244,242,234,.25);
+  --line-on-bone:rgba(12,15,31,.15);
+  --head-blue:rgba(16,31,180,.65);
+  --head-bone:rgba(244,242,234,.8);
+  --display:'Bricolage Grotesque','Archivo Black','Arial Black',Impact,sans-serif;
+  --body:'Instrument Sans',system-ui,'Segoe UI',Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+  --pad:clamp(20px,5vw,72px);
+  --max:1240px;
+}
+html[data-theme="dark"]{
+  --press:#0A0D1C;                     /* the press runs at night */
+  --cobalt-deep:#10153A;
+  --tone:#E9E7DC;
+  --paper:#12152B;                     /* carbon paper */
+  --paper-ink:#E9E7DC;
+  --cob-text:#7C88FF;                  /* cobalt lifted for contrast on dark paper */
+  --line-on-blue:rgba(233,231,220,.18);
+  --line-on-bone:rgba(233,231,220,.14);
+  --head-blue:rgba(7,9,22,.6);
+  --head-bone:rgba(18,21,43,.8);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+body{
+  background:var(--press);
+  color:var(--tone);
+  font-family:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--flare);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--flare);outline-offset:4px}
+.mono{font-family:var(--mono)}
+
+/* ===== the living halftone — fixed behind everything ===== */
+#dots{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
+main,footer{position:relative;z-index:1}
+.panel-blue{background:transparent;color:var(--tone)}   /* windows onto the halftone */
+.panel-bone{background:var(--paper);color:var(--paper-ink);position:relative}
+.panel-bone::before{ /* faint print grain so the paper feels pressed */
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.45;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.06 0 0 0 0 0.12 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.panel-bone > *{position:relative}
+html[data-theme="dark"] .panel-bone::before{filter:invert(1);opacity:.07}
+footer{background:var(--press)}
+section{padding:clamp(84px,12vh,150px) var(--pad)}
+.wrap{max-width:var(--max);margin:0 auto}
+.kicker{
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;margin-bottom:30px;
+}
+.panel-bone .kicker{color:var(--cob-text)}
+.panel-blue .kicker{color:var(--flare)}
+.kicker::before{content:"";width:10px;height:10px;background:currentColor}
+h2{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2.2rem,6vw,4rem);
+  line-height:.96;letter-spacing:-.02em;text-transform:uppercase;
+  margin-bottom:26px;
+}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ top bar ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px var(--pad);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
+  mix-blend-mode:normal;
+  background:linear-gradient(var(--head-blue),transparent 140%);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-on-blue);
+  color:var(--tone);
+  transition:background .3s,color .3s,border-color .3s;
+}
+header.on-bone{
+  background:var(--head-bone);color:var(--paper-ink);
+  border-color:var(--line-on-bone);
+}
+.brand b{color:var(--flare);font-weight:500}
+.head-meta{display:flex;gap:26px;align-items:center}
+.head-meta .dot{width:8px;height:8px;border-radius:50%;background:var(--flare);display:inline-block;margin-right:8px;animation:blink 2.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.head-links{display:flex;gap:22px}
+.head-links a{opacity:.85;transition:opacity .2s,color .2s}
+.head-links a:hover{opacity:1;color:var(--flare)}
+.theme-btn{
+  width:32px;height:32px;display:grid;place-items:center;flex:none;
+  background:none;border:1px solid currentColor;color:inherit;cursor:pointer;
+  font-size:.95rem;line-height:1;transition:color .2s,border-color .2s,transform .3s;
+}
+.theme-btn:hover{color:var(--flare);transform:rotate(180deg)}
+@media (max-width:760px){
+  .head-meta .clock,.head-links a:not(:last-child){display:none}
+  .head-meta{gap:16px}
+  .theme-btn{width:40px;height:40px;font-size:1.05rem;border-color:var(--flare);color:var(--flare)}
+}
+
+/* ============ HERO — the poster ============ */
+#hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding-bottom:clamp(40px,7vh,80px);padding-top:110px;
+  position:relative;overflow:hidden;
+}
+.hero-line{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(3rem,12.5vw,11rem);
+  line-height:.88;letter-spacing:-.025em;
+  display:block;overflow:hidden;
+}
+.hero-line span{display:inline-block;transform:translateY(110%);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.hero-line:nth-child(2) span{animation-delay:.1s}
+.hero-line:nth-child(3) span{animation-delay:.2s}
+@keyframes rise{to{transform:none}}
+.hero-line .hollow{
+  color:transparent;
+  -webkit-text-stroke:2px var(--tone);
+}
+.hero-line .flare-word{color:var(--flare);display:inline-block;transform:translateY(110%) skewX(-6deg);animation:riseSkew .9s .1s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes riseSkew{to{transform:skewX(-6deg)}}
+.hero-foot{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:30px;
+  margin-top:clamp(28px,5vh,54px);flex-wrap:wrap;
+}
+.hero-sub{
+  max-width:520px;font-size:clamp(.98rem,1.5vw,1.12rem);color:var(--tone);opacity:.92;
+  border-left:3px solid var(--flare);padding-left:18px;
+  opacity:0;animation:fade .8s .55s forwards;
+}
+@keyframes fade{to{opacity:.92}}
+.hero-actions{display:flex;align-items:center;gap:22px;opacity:0;animation:fade .8s .7s forwards}
+.btn{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:16px 28px;border:1px solid var(--tone);color:var(--tone);
+  display:inline-block;position:relative;overflow:hidden;transition:color .25s,border-color .25s;
+  background:transparent;cursor:pointer;
+}
+.btn::before{content:"";position:absolute;inset:0;background:var(--flare);transform:translateY(101%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:-1}
+.btn:hover{color:var(--ink);border-color:var(--flare)}
+.btn:hover::before{transform:none}
+.btn.solid{background:var(--flare);border-color:var(--flare);color:var(--ink)}
+.btn.solid::before{background:var(--tone)}
+/* spinning badge */
+.badge{
+  width:108px;height:108px;flex:none;position:relative;
+  opacity:0;animation:fade .8s .85s forwards;
+}
+.badge svg{width:100%;height:100%;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge text{font-family:var(--mono);font-size:10.5px;letter-spacing:.32em;fill:var(--tone);text-transform:uppercase}
+.badge::after{content:"↓";position:absolute;inset:0;display:grid;place-items:center;font-size:1.3rem;color:var(--flare)}
+@media (max-width:760px){ .badge{display:none} }
+
+/* ============ marquee band ============ */
+.band{
+  background:var(--flare);color:var(--ink);
+  overflow:hidden;white-space:nowrap;padding:14px 0;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+}
+.band-track{display:inline-block;animation:slide 26s linear infinite}
+.band span{font-family:var(--display);font-weight:600;font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;margin:0 26px}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============ WORK — index rows + preview lens ============ */
+#work h2{max-width:14ch}
+.rows{border-top:1px solid var(--line-on-bone);margin-top:26px}
+.row{
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:18px;
+  padding:clamp(26px,4.5vh,44px) 8px;
+  border-bottom:1px solid var(--line-on-bone);
+  position:relative;cursor:pointer;
+  transition:background .25s,color .25s,padding .25s;
+}
+.row:hover{background:var(--cobalt);color:var(--tone);padding-left:22px;padding-right:22px}
+.row h3{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.5rem,4.6vw,3rem);letter-spacing:-.015em;line-height:1;
+}
+.row .meta{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cob-text);margin-top:10px;transition:color .25s;
+}
+.row:hover .meta{color:var(--flare)}
+.row .arrow{
+  font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,3vw,2rem);
+  transition:transform .3s;color:var(--cob-text);
+}
+.row:hover .arrow{transform:translateX(8px) rotate(-45deg);color:var(--flare)}
+.row p{display:none}
+/* the mock window used by lens + mobile cards */
+.mock{
+  background:var(--ink);color:#B9C0D8;border:1px solid rgba(244,242,234,.18);
+  font-family:var(--mono);font-size:.72rem;line-height:1.9;
+  padding:14px 16px;border-radius:10px;
+}
+.mock::before{content:"● ● ●";letter-spacing:4px;font-size:.58rem;opacity:.5;display:block;margin-bottom:8px}
+.mock b{color:var(--flare);font-weight:500}
+.mock u{color:var(--tone);text-decoration:none}
+.row .mock-src{display:none}
+/* preview lens (desktop, fine pointer only) */
+#lens{
+  position:fixed;z-index:40;width:min(380px,34vw);pointer-events:none;
+  opacity:0;transform:scale(.92);transition:opacity .25s,transform .25s;
+}
+#lens.show{opacity:1;transform:scale(1)}
+#lens .lens-tag{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--flare);color:var(--ink);display:inline-block;padding:4px 10px;margin-bottom:8px;
+}
+@media (hover:none),(pointer:coarse){ #lens{display:none} }
+/* mobile: show mock inline, full row info */
+@media (max-width:860px){
+  .row{grid-template-columns:1fr;cursor:default}
+  .row .arrow{display:none}
+  .row p{display:block;margin-top:12px;font-size:.95rem;opacity:.85}
+  .row .mock-src{display:block;margin-top:16px}
+  .row:hover{padding-left:8px;padding-right:8px}
+  #lens{display:none}
+}
+.row-links{display:flex;gap:18px;margin-top:14px}
+.row-links a{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  border-bottom:1px solid currentColor;padding-bottom:2px;
+}
+.row-links a:hover{color:var(--flare)}
+@media (min-width:861px){ .row-links{display:none} }
+
+/* ============ capabilities (cobalt) ============ */
+.cap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border:1px solid var(--line-on-blue);margin-top:14px}
+.cap{
+  padding:30px 28px;border-right:1px solid var(--line-on-blue);border-bottom:1px solid var(--line-on-blue);
+  transition:background .25s;
+}
+.cap:hover{background:var(--cobalt-deep)}
+.cap h3{
+  font-family:var(--display);font-weight:600;font-size:1.1rem;text-transform:uppercase;
+  letter-spacing:.02em;margin-bottom:16px;display:flex;gap:10px;align-items:baseline;
+}
+.cap h3 i{font-style:normal;color:var(--flare);font-family:var(--mono);font-size:.8rem}
+.cap ul{list-style:none}
+.cap li{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--tone);
+  opacity:.8;padding:3px 0;
+}
+.cap li::before{content:"— ";color:var(--flare)}
+
+/* ============ about (bone) ============ */
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(34px,6vw,90px)}
+.about-grid p{margin-bottom:18px;font-size:1.08rem;color:var(--paper-ink);opacity:.86}
+.about-grid p strong{color:var(--cob-text);font-weight:600}
+.pull{
+  font-family:var(--display);font-weight:600;font-size:clamp(1.2rem,2.4vw,1.6rem);
+  line-height:1.25;border-left:4px solid var(--flare);padding-left:20px;margin:26px 0;
+  color:var(--paper-ink);
+}
+.stats{display:grid;gap:0;border:1px solid var(--line-on-bone)}
+.stat{padding:24px 26px;border-bottom:1px solid var(--line-on-bone)}
+.stat:last-child{border-bottom:none}
+.stat .num{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,3.4vw,2.6rem);color:var(--cob-text);line-height:1}
+.stat .lbl{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.65;margin-top:6px}
+
+/* ============ path (bone) ============ */
+.t-row{
+  display:grid;grid-template-columns:170px 1fr;gap:24px;
+  padding:26px 0;border-bottom:1px solid var(--line-on-bone);
+}
+.t-row:first-of-type{border-top:1px solid var(--line-on-bone)}
+.t-when{font-family:var(--mono);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cob-text);padding-top:6px}
+.t-row h3{font-family:var(--display);font-weight:600;font-size:1.25rem;text-transform:uppercase;letter-spacing:.01em}
+.t-row .org{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--flare)}
+.t-row p{margin-top:8px;opacity:.8;max-width:620px}
+@media (max-width:680px){ .t-row{grid-template-columns:1fr;gap:6px} }
+
+/* ============ contact poster (cobalt) ============ */
+#contact{position:relative;overflow:hidden;padding-bottom:0}
+.contact-head{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(2.6rem,9vw,7rem);line-height:.92;letter-spacing:-.02em;
+}
+.contact-head em{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--tone)}
+.contact-row{display:flex;gap:26px;align-items:center;margin-top:40px;flex-wrap:wrap}
+.mag{display:inline-block;will-change:transform}
+.socials{display:flex;gap:24px;margin-top:46px;flex-wrap:wrap}
+.socials a{
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.8;transition:opacity .2s,color .2s;
+}
+.socials a:hover{opacity:1;color:var(--flare)}
+.watermark{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(4rem,17vw,15rem);line-height:.78;letter-spacing:-.03em;
+  color:var(--cobalt-deep);user-select:none;pointer-events:none;
+  margin-top:clamp(40px,8vh,90px);text-align:center;
+  transform:translateY(14%);
+}
+footer{
+  background:var(--cobalt);
+  border-top:1px solid var(--line-on-blue);
+  padding:20px var(--pad);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tone);opacity:.85;
+}
+footer a:hover{color:var(--flare)}
+</style>
+</head>
+<body>
+
+<canvas id="dots" aria-hidden="true"></canvas>
+
+<header id="topbar">
+  <a class="brand" href="#hero">HARIHARAN<b>.I</b></a>
+  <div class="head-meta">
+    <button class="theme-btn" id="themeBtn" aria-label="Switch theme">◐</button>
+    <span class="clock mono" id="clock">— : — IST</span>
+    <span><span class="dot"></span>Open to work</span>
+    <nav class="head-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#capabilities">Stack</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HERO ================= -->
+<section id="hero" class="panel-blue">
+  <div class="wrap">
+    <h1>
+      <span class="hero-line"><span>I build</span></span>
+      <span class="hero-line"><span class="flare-word">fast, living</span></span>
+      <span class="hero-line"><span class="hollow">software.</span></span>
+    </h1>
+    <div class="hero-foot">
+      <p class="hero-sub">Hariharan I — full-stack developer shipping AI-integrated web products end-to-end. From blank repo to production: APIs, databases, and the last 100ms of load time.</p>
+      <div class="hero-actions">
+        <a class="btn solid" href="#work">See the work</a>
+        <a class="btn" href="mailto:hariharani1401@gmail.com">Email me</a>
+        <a class="badge" href="#work" aria-label="Scroll to work">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+            <text><textPath href="#circ">FULL-STACK · AI · OPEN TO WORK · </textPath></text>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BAND ================= -->
+<div class="band" aria-hidden="true">
+  <div class="band-track" id="band">
+    <span>React</span><span>Next.js</span><span>TypeScript</span><span>Node.js</span>
+    <span>FastAPI</span><span>PostgreSQL</span><span>MongoDB</span><span>LangChain</span>
+    <span>ChromaDB</span><span>Docker</span><span>Vercel</span><span>OpenCV</span>
+  </div>
+</div>
+
+<!-- ================= WORK ================= -->
+<section id="work" class="panel-bone">
+  <div class="wrap">
+    <p class="kicker reveal">Selected work</p>
+    <h2 class="reveal">Things I've shipped</h2>
+
+    <div class="rows reveal" id="rows">
+
+      <article class="row" data-tag="Next.js · Tooling · Financial">
+        <div>
+          <h3>QuickGST Calculator</h3>
+          <p class="meta">Instant tax & invoice tool · Next.js · TypeScript · Vercel</p>
+          <p>A fast, responsive Invoice and GST Calculator. Built to streamline personal billing and tax calculations instantly on the client side without the bloat of traditional accounting software.</p>
+          <div class="mock mock-src"><b>calc</b>.invoice(items, gst: 18%)<br>↳ state: <u>Client-side (0ms)</u><br>↳ total: <b>$1,180.00</b> · status: <u>Deployed to Vercel</u></div>
+          <div class="row-links">
+            <a href="https://github.com/Hariharan-I-1401/QuickGST-Invoice-Calculator" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="https://quick-gst-invoice-calculator-ei05gx3vh.vercel.app" target="_blank" rel="noopener">Live App ↗</a>
+          </div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </article>
+
+
+      <article class="row" data-tag="AI · RAG · Video">
+        <div>
+          <h3>VideoMetrics AI</h3>
+          <p class="meta">AI video comparison · Next.js · FastAPI · LangChain · ChromaDB</p>
+          <p>Compares YouTube Shorts and Instagram Reels using transcripts, RAG, and embeddings — surfacing what makes one video outperform another.</p>
+          <div class="mock mock-src"><b>rag</b>.compare(short, reel)<br>↳ transcripts: <u>AssemblyAI</u> → chunks: <u>312</u><br>↳ similarity: <b>0.87</b> · verdict: <u>reel wins hook</u></div>
+          <div class="row-links"><a href="https://github.com/Hariharan-I-1401" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </article>
+
+      <article class="row" data-tag="Full-stack · CRM">
+        <div>
+          <h3>GigFlow CRM</h3>
+          <p class="meta">Smart leads dashboard · React · TypeScript · Node · MongoDB · Docker</p>
+          <p>Production-grade CRM with real-time lead ingestion, server-side pagination, CSV exports, JWT + role-based access, and debounced multi-parameter search (300ms).</p>
+          <div class="mock mock-src"><b>GET</b> /api/leads?page=4&amp;q=design<br>↳ auth: <u>JWT · role: admin</u><br>↳ 50 rows in <b>92ms</b> · export: <u>leads.csv</u></div>
+          <div class="row-links"><a href="https://github.com/Hariharan-I-1401" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </article>
+
+      <article class="row" data-tag="Analytics · Tooling">
+        <div>
+          <h3>AI Task Knowledge System</h3>
+          <p class="meta">Retrieval &amp; analytics engine · React (Vite) · FastAPI · MySQL · Pandas</p>
+          <p>An 11-section founder application wizard with live canvas charts, real-time pipeline metrics, JWT-verified server truth states, and one-click Excel exports.</p>
+          <div class="mock mock-src"><b>wizard</b>.step(7/11) → saved<br>↳ session truth: <u>server-verified</u><br>↳ report: <u>metrics.xlsx</u> · <b>1 click</b></div>
+          <div class="row-links"><a href="https://github.com/Hariharan-I-1401" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </article>
+
+      <article class="row" data-tag="AI · Computer Vision">
+        <div>
+          <h3>Smart Study App</h3>
+          <p class="meta">Adaptive learning · FastAPI · OpenCV · Gemini AI · SQLite</p>
+          <p>Real-time webcam eye-tracking to monitor engagement, personalized recommendations from Gemini, automated note summaries, and chatbot support.</p>
+          <div class="mock mock-src"><b>cv</b>.track(gaze) → engaged: <u>91%</u><br>↳ gemini: <u>3 topic recommendations</u><br>↳ notes.pdf → summary in <b>4s</b></div>
+          <div class="row-links"><a href="https://github.com/Hariharan-I-1401" target="_blank" rel="noopener">GitHub ↗</a></div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- lens lives outside sections so it can float anywhere -->
+<div id="lens" aria-hidden="true">
+  <span class="lens-tag" id="lensTag"></span>
+  <div class="mock" id="lensMock"></div>
+</div>
+
+<!-- ================= CAPABILITIES ================= -->
+<section id="capabilities" class="panel-blue">
+  <div class="wrap">
+    <p class="kicker reveal">Toolbox</p>
+    <h2 class="reveal">What I work with</h2>
+    <div class="cap-grid reveal">
+      <div class="cap">
+        <h3><i>FE</i>Frontend</h3>
+        <ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind</li><li>Framer Motion</li></ul>
+      </div>
+      <div class="cap">
+        <h3><i>BE</i>Backend</h3>
+        <ul><li>Node.js</li><li>FastAPI</li><li>Express</li><li>Python</li><li>GraphQL · REST</li></ul>
+      </div>
+      <div class="cap">
+        <h3><i>DB</i>Data &amp; Infra</h3>
+        <ul><li>PostgreSQL</li><li>MongoDB</li><li>Redis</li><li>Docker</li><li>Vercel · Google Cloud · CI/CD</li></ul>
+      </div>
+      <div class="cap">
+        <h3><i>AI</i>AI &amp; Vector</h3>
+        <ul><li>LangChain</li><li>Gemini embeddings</li><li>ChromaDB</li><li>AssemblyAI</li><li>OpenCV</li></ul>
+      </div>
+      <div class="cap">
+        <h3><i>PR</i>Practices</h3>
+        <ul><li>Testing</li><li>Accessibility</li><li>Performance tuning</li><li>Code review</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="panel-bone">
+  <div class="wrap">
+    <p class="kicker reveal">About</p>
+    <div class="about-grid">
+      <div>
+        <h2 class="reveal">Code is a craft. I treat it like one.</h2>
+        <p class="reveal">I graduated in 2026 with a B.E. in Computer Science. I take products from <strong>blank repo to production</strong> — designing APIs, tuning databases, and obsessing over the last 100ms of load time.</p>
+        <div class="pull reveal">"Interfaces that feel alive, backed by systems that stay boring under load."</div>
+        <p class="reveal">That seam between engineering and design is where I do my best work. When I'm not building, I write short notes about <strong>debugging and system design</strong>.</p>
+      </div>
+      <div class="stats reveal">
+        <div class="stat"><div class="num"><span data-count="6">0</span>+</div><div class="lbl">Projects delivered</div></div>
+        <div class="stat"><div class="num">2026</div><div class="lbl">B.E. Computer Science</div></div>
+        <div class="stat"><div class="num">Full-stack + AI</div><div class="lbl">Apps · AI integrations · dev tooling</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PATH ================= -->
+<section id="path" class="panel-bone" style="padding-top:0">
+  <div class="wrap">
+    <p class="kicker reveal">Path</p>
+    <h2 class="reveal">Where I've been, where I'm headed</h2>
+    <div class="reveal">
+      <div class="t-row">
+        <span class="t-when">Next 2 years</span>
+        <div>
+          <h3>Where I'm headed</h3>
+          <span class="org">Goal</span>
+          <p>Becoming a reliable full-stack engineer shipping scalable, AI-integrated features — and mentoring junior engineers along the way.</p>
+        </div>
+      </div>
+      <div class="t-row">
+        <span class="t-when">2026</span>
+        <div>
+          <h3>B.E. Computer Science</h3>
+          <span class="org">Graduate</span>
+          <p>Completed my degree while shipping real products on the side — multiple end-to-end projects and production deployments.</p>
+        </div>
+      </div>
+      <div class="t-row">
+        <span class="t-when">2024 — Present</span>
+        <div>
+          <h3>Independent projects &amp; open source</h3>
+          <span class="org">Builder</span>
+          <p>Building and deploying full-stack and AI-integrated applications independently — from RAG pipelines to CRM dashboards.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="panel-blue">
+  <div class="wrap">
+    <p class="kicker reveal">Contact</p>
+    <p class="contact-head reveal">Let's build<br><em>something.</em></p>
+    <div class="contact-row reveal">
+      <span class="mag"><a class="btn solid" href="mailto:hariharani1401@gmail.com">hariharani1401@gmail.com</a></span>
+      <span class="mag"><a class="btn" href="https://www.linkedin.com/in/hariharan-i-aa82b5299/" target="_blank" rel="noopener">LinkedIn</a></span>
+      <span class="mag"><a class="btn" href="tel:+919363310024">+91 93633 10024</a></span>
+    </div>
+    </div>
+    <div class="socials reveal">
+      <a href="https://github.com/Hariharan-I-1401" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="mailto:hariharani1401@gmail.com">Email ↗</a>
+      <a href="https://www.linkedin.com/in/hariharan-i-aa82b5299/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+  <div class="watermark" aria-hidden="true">Hariharan</div>
+</section>
+
+</main>
+
+<footer>
+  <span>© 2026 Hariharan I</span>
+  <span>Designed &amp; built by hand — no libraries</span>
+  <a href="#hero">Back to top ↑</a>
+</footer>
+
+<script>
+(function(){
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ============================================================
+     THE LIVING HALFTONE
+     The cobalt panels are printed in real time: a field of halftone
+     dots breathes in slow interfering waves, like ink rolling
+     through a press. Scrolling pushes energy into the field — the
+     waves swell and speed up, then settle. Every 23rd dot is flare
+     orange, like a registration mark. Bone panels sit on top as
+     opaque paper, so the press only shows through the blue panels.
+     ============================================================ */
+  const canvas = document.getElementById('dots');
+  const ctx = canvas.getContext('2d');
+  let W,H,DPR,cols,rows,GAP;
+
+  // the press has a day shift and a night shift
+  function palette(){
+    return document.documentElement.dataset.theme === 'dark'
+      ? {press:'#0A0D1C', dot:'124,136,255', boost:.05}   // night: cobalt ink on black
+      : {press:'#1A2AE0', dot:'244,242,234', boost:0};    // day: bone ink on cobalt
+  }
+  const FLARE = (a)=>`rgba(255,107,44,${a})`;
+
+  function sizeUp(){
+    DPR = Math.min(devicePixelRatio||1, 2);
+    W = canvas.width = innerWidth*DPR;
+    H = canvas.height = innerHeight*DPR;
+    canvas.style.width = innerWidth+'px';
+    canvas.style.height = innerHeight+'px';
+    GAP = (innerWidth < 700 ? 30 : 26)*DPR;
+    cols = Math.ceil(W/GAP)+1;
+    rows = Math.ceil(H/GAP)+1;
+  }
+  sizeUp();
+  addEventListener('resize', ()=>{ sizeUp(); if(reduced) repaintStatic(); });
+
+  // scroll energy
+  let lastY = scrollY, vel = 0;
+  addEventListener('scroll', ()=>{ vel += (scrollY-lastY)*0.05; lastY = scrollY; }, {passive:true});
+
+  function paintField(t, energy){
+    const pal = palette();
+    ctx.fillStyle = pal.press;
+    ctx.fillRect(0,0,W,H);
+    const amp = 0.85 + energy*0.06;            // wave height
+    const drift = scrollY*0.0012;              // field slides slightly with the page
+    for(let i=0;i<cols;i++){
+      for(let j=0;j<rows;j++){
+        const x = i*GAP, y = j*GAP;
+        // two interfering wave fronts + a slow diagonal swell
+        const w1 = Math.sin(i*0.32 + t*1.1 + drift);
+        const w2 = Math.cos(j*0.27 - t*0.8);
+        const w3 = Math.sin((i+j)*0.12 + t*0.5);
+        const wave = (w1 + w2 + w3)/3;                       // -1..1
+        let r = (1.15 + wave*amp) * DPR;
+        if(r <= 0.18*DPR) continue;
+        const isFlare = ((i*7 + j*13) % 23) === 0;
+        const a = 0.16 + (wave+1)*0.11 + energy*0.004 + pal.boost;
+        ctx.fillStyle = isFlare ? FLARE(Math.min(a+0.1,.8)) : `rgba(${pal.dot},${Math.min(a,.6)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.min(r, GAP*0.42), 0, 7);
+        ctx.fill();
+      }
+    }
+  }
+  const repaintStatic = ()=> paintField(0, 0);
+
+  if(reduced){
+    repaintStatic();
+  } else {
+    let t = 0;
+    (function frame(){
+      vel *= 0.93;
+      const energy = Math.min(Math.abs(vel), 26);
+      t += 0.012 + energy*0.0016;              // scroll speeds the press up
+      paintField(t, energy);
+      requestAnimationFrame(frame);
+    })();
+  }
+
+  /* ===== theme toggle ===== */
+  const themeBtn = document.getElementById('themeBtn');
+  function syncThemeBtn(){
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeBtn.textContent = dark ? '☀' : '◐';
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  syncThemeBtn();
+  themeBtn.addEventListener('click', ()=>{
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try{ localStorage.setItem('theme', next); }catch(e){}
+    syncThemeBtn();
+    if(reduced) repaintStatic();               // animated mode picks it up next frame
+  });
+
+  /* ===== live IST clock ===== */
+  const clock = document.getElementById('clock');
+  function tick(){
+    const t = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'}).format(new Date());
+    clock.textContent = t + ' IST';
+  }
+  tick(); setInterval(tick, 30000);
+
+  /* ===== header flips style over bone panels ===== */
+  const topbar = document.getElementById('topbar');
+  const bones = document.querySelectorAll('.panel-bone');
+  function headSync(){
+    const y = 64; let onBone = false;
+    bones.forEach(s=>{
+      const r = s.getBoundingClientRect();
+      if(r.top <= y && r.bottom >= y) onBone = true;
+    });
+    topbar.classList.toggle('on-bone', onBone);
+  }
+  addEventListener('scroll', headSync, {passive:true});
+  headSync();
+
+  /* ===== reveal on scroll ===== */
+  const io = new IntersectionObserver(es=>{
+    for(const e of es){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }
+  },{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  /* ===== counters ===== */
+  const cio = new IntersectionObserver(es=>{
+    for(const e of es){
+      if(!e.isIntersecting) continue; cio.unobserve(e.target);
+      const el=e.target, target=+el.dataset.count, t0=performance.now();
+      (function step(now){
+        const p=Math.min((now-t0)/1100,1), eased=1-Math.pow(1-p,3);
+        el.textContent=Math.round(target*eased);
+        if(p<1) requestAnimationFrame(step);
+      })(t0);
+    }
+  },{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+  /* ===== marquee loop ===== */
+  const band = document.getElementById('band');
+  band.innerHTML += band.innerHTML;
+
+  /* ===== THE SIGNATURE: preview lens chasing the cursor ===== */
+  if(finePointer && !reduced){
+    const lens = document.getElementById('lens');
+    const lensTag = document.getElementById('lensTag');
+    const lensMock = document.getElementById('lensMock');
+    let lx=0, ly=0, tx=0, ty=0, active=false, raf=null;
+
+    function loop(){
+      lx += (tx-lx)*0.14; ly += (ty-ly)*0.14;
+      const vw=innerWidth, lw=lens.offsetWidth||360, lh=lens.offsetHeight||140;
+      let px = lx+26, py = ly+26;
+      if(px+lw > vw-16) px = lx-lw-26;            // flip left near right edge
+      if(py+lh > innerHeight-16) py = ly-lh-26;   // flip up near bottom
+      lens.style.transform = `translate(${px}px, ${py}px) scale(${active?1:.92})`;
+      raf = requestAnimationFrame(loop);
+    }
+    document.querySelectorAll('.row').forEach(row=>{
+      row.addEventListener('mouseenter', ()=>{
+        lensTag.textContent = row.dataset.tag;
+        lensMock.innerHTML = row.querySelector('.mock-src').innerHTML;
+        active = true;
+        lens.classList.add('show');
+        if(!raf) raf = requestAnimationFrame(loop);
+      });
+      row.addEventListener('mouseleave', ()=>{
+        active = false;
+        lens.classList.remove('show');
+      });
+      row.addEventListener('mousemove', e=>{ tx=e.clientX; ty=e.clientY; });
+      // whole row clicks through to GitHub on desktop
+      row.addEventListener('click', ()=> window.open('https://github.com/Hariharan-I-1401','_blank','noopener'));
+    });
+    lens.style.left='0'; lens.style.top='0';
+  }
+
+  /* ===== magnetic buttons (contact) ===== */
+  if(finePointer && !reduced){
+    document.querySelectorAll('.mag').forEach(m=>{
+      const strength = 22;
+      m.addEventListener('mousemove', e=>{
+        const r=m.getBoundingClientRect();
+        const x=(e.clientX-r.left-r.width/2)/r.width, y=(e.clientY-r.top-r.height/2)/r.height;
+        m.style.transform=`translate(${x*strength}px, ${y*strength}px)`;
+      });
+      m.addEventListener('mouseleave', ()=>{ m.style.transform=''; });
+      m.style.transition='transform .25s cubic-bezier(.2,.8,.2,1)';
+    });
+  }
+})();
+</script>
+</body>
+</html>
